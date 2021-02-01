@@ -5,10 +5,12 @@ import mikroOrmConfig from './mikro-orm.config';
 
 const main = async () => {
   const orm = await MikroORM.init(mikroOrmConfig);
-
-  const post = orm.em.create(Post, {title: 'First post '});
-  await orm.em.persistAndFlush(post);
-  await orm.em.nativeInsert(Post,{title:'post 2 '})
+  await orm.getMigrator().up();
+  //const post = orm.em.create(Post, { title: 'First post ' });
+  //await orm.em.persistAndFlush(post);
+  //await orm.em.nativeInsert(Post, { title: 'post 2 ' })
+  const posts = await orm.em.find(Post,{});
+  console.log(posts);
 }
 
 console.log("hello world");
