@@ -11,7 +11,7 @@ import { UserResolver } from './resolvers/user';
 import redis from 'redis';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
-import MyContext from './types';
+import {MyContext } from './types';
 
 
 const main = async () => {
@@ -29,18 +29,19 @@ const main = async () => {
       store: new RedisStore({ 
         client: redisClient,
         //disableTTL:true,
-        disabletouch: true
+        disableTouch: true,
       }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, //ten years
         httpOnly: true,
         sameSite: 'lax', //csrf
-        secure:__prod__ //cookie only works in https
-      }
+        secure:__prod__, //cookie only works in https
+      },
+      saveUninitialized: false,
       secret: 'sajdkhasjkdhsajkdh',
       resave:false,
-    });
-  )
+    })
+  );
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
@@ -48,7 +49,7 @@ const main = async () => {
       validate:false,
     }),
     context: ({ req, res }): MyContext => ({em:orm.em, req, res})
-  })
+  });
 
   apolloServer.applyMiddleware({ app });
 
